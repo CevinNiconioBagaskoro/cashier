@@ -87,6 +87,8 @@ public class BarangService {
             while (st.hasMoreElements()) {
                 if (id == 0) {
                     barang.setKodeBarang(st.nextToken());
+                } else if (id == 1) {
+                    barang.setNamaBarang(st.nextToken());
                 } else if (id == 2) {
                     barang.setHargaBarang(Integer.parseInt(st.nextToken())
                     );
@@ -103,5 +105,14 @@ public class BarangService {
                 Barang barang){
         barangList.add(barang);
         writeFile();
+        }
+        public List<Barang>
+        findByName(String name){
+        List<Barang>
+                resultList =
+                barangList.stream().filter(
+                        barang -> barang.getNamaBarang().startsWith(name)
+                ).toList();
+        return resultList;
         }
 }
