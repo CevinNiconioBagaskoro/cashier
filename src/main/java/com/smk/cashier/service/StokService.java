@@ -108,10 +108,7 @@ public class StokService {
     public List<Stok>
     findByKode(String kode){
         List<Stok>
-                resultList =
-                stokList.stream().filter(
-                        barang -> barang.getKodeBarang().equals(kode)
-                ).toList();
+                resultList = stokList.stream().filter(barang -> barang.getKodeBarang().equals(kode)).toList();
         return resultList;
     }
 }
