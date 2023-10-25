@@ -9,26 +9,27 @@ import org.junit.jupiter.api.TestMethodOrder;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
+import java.util.function.Consumer;
 
 import static org.junit.jupiter.api.Assertions.*;
 @TestMethodOrder(
         MethodOrderer.OrderAnnotation.class)
-class BarangServiceTest{
+class BarangServiceTest {
 
     @Test
     @Order(2)
     void getBarangList() {
         List<Barang> barangList = BarangService.getInstance().getBarangList();
-        assertEquals(barangList.size(),3);
+        assertEquals(barangList.size(), 3);
     }
 
     @Test
     @Order(3)
-    void findByName(){
+    void findByName() {
         List<Barang> resultList = BarangService.getInstance().findByName("Laptop");
-        assertEquals(resultList.size(),2);
+        assertEquals(resultList.size(), 2);
     }
-
 
 
     @org.junit.jupiter.api.Test
@@ -47,11 +48,12 @@ class BarangServiceTest{
         BarangService.getInstance().addBarang(mouse);
 
         Barang laptopGaming = new Barang();
-        laptopGaming.setKodeBarang("L001");
+        laptopGaming.setKodeBarang("LP0002");
         laptopGaming.setNamaBarang("Laptop Gaming");
         laptopGaming.setHargaBarang(20000000);
         BarangService.getInstance().addBarang(laptopGaming);
     }
+
     @Test
     @Order(4)
     void addToDB() {
@@ -82,4 +84,33 @@ class BarangServiceTest{
         barangDao.save(laptopgaming);
     }
 
+    @Test
+    @Order(5)
+    void getDataById() {
+        BarangDao barangDao = new BarangDao();
+        Optional<Barang> barang1 = barangDao.get(1);
+        barang1.ifPresent(new Consumer<Barang>() {
+            @Override
+            public void accept(Barang barang) {
+                assertEquals("laptop", barang.getNamaBarang());
+                assertEquals("lP001", barang.getKodeBarang());
+            }
+        });
+        Optional<Barang> barang2 = barangDao.get(1);
+        barang2.ifPresent(new Consumer<Barang>() {
+            @Override
+            public void accept(Barang barang) {
+                assertEquals("Mouse", barang.getNamaBarang());
+                assertEquals("MO001", barang.getKodeBarang());
+            }
+        });
+        Optional<Barang> barang3 = barangDao.get(1);
+        barang3.ifPresent(new Consumer<Barang>() {
+            @Override
+            public void accept(Barang barang) {
+                assertEquals("Laptop Gaming", barang.getNamaBarang());
+                assertEquals("LP0002", barang.getKodeBarang());
+            }
+        });
+    }
 }

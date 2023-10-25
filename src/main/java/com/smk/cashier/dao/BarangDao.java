@@ -10,13 +10,35 @@ import java.util.Optional;
 public class BarangDao implements Dao<Barang, Integer>{
     private final Optional<Connection> connection;
 
-    public BarangDao() {
-        connection = JdbcConnection.getConnection();
-    }
+    public BarangDao() {connection = JdbcConnection.getConnection();}
+
+
 
     @Override
     public Optional<Barang> get(int id) {
-        return Optional.empty();
+        return connection.flatMap(conn -> {
+            Optional<Barang> barang = Optional.empty();
+            String sql = "SELECT * from barang where barang id = ?";
+            try {
+                PreparedStatement ps = conn.prepareStatement(sql);
+                ps.setInt(1, id);
+                ResultSet rs = ps.getResultSet();
+                if (rs.next()) {
+                    String kodeBarang = rs.getString("kode_barang");
+                    String namaBarang = rs.getString("nama_barang");
+                    int hargaBarang = rs.getInt("harga_barang");
+                    Barang barangResult = new Barang();
+                    barangResult.setKodeBarang(kodeBarang);
+                    barangResult.setNamaBarang(namaBarang);
+                    barangResult.setHargaBarang(hargaBarang);
+
+                    barang = Optional.of(barangResult);
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+            return barang;
+        });
     }
 
     @Override
@@ -59,8 +81,7 @@ public class BarangDao implements Dao<Barang, Integer>{
     }
 
     @Override
-    public Void delete(Barang barang) {
+    public void delete(Barang barang) {
 
-        return null;
     }
 }
